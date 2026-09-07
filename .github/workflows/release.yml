@@ -1,0 +1,68 @@
+name: Release
+
+# Pushing a version tag builds Windows artifacts, publishes a GitHub release,
+# and pushes the same build to itch.io.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # Change this to your itch.io page, in the form user/project.
+  ITCH_TARGET: YOUR-ITCH-USERNAME/geminivillain
+
+jobs:
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # electron-builder publishes to the GitHub release matching the tag.
+      # GH_TOKEN is provided by Actions; no secret to create.
+      - name: Build and publish to GitHub
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts to the workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            release/*.exe
+            release/*.zip
+
+      # itch.io only runs when the key is present, so forks and dry runs skip it.
+      - name: Push to itch.io
+        if: env.BUTLER_API_KEY != ''
+        shell: pwsh
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          Invoke-WebRequest -Uri https://broth.itch.zone/butler/windows-amd64/LATEST/archive/default -OutFile butler.zip
+          Expand-Archive butler.zip -DestinationPath butler
+          $version = "${{ github.ref_name }}".TrimStart('v')
+
+          # The zip is the portable build; itch can unpack and launch it.
+          $zip = Get-ChildItem release/*.zip | Select-Object -First 1
+          ./butler/butler.exe push $zip.FullName "$env:ITCH_TARGET`:windows" --userversion $version
+
+          # The installer, for people who would rather install it.
+          $exe = Get-ChildItem release/*Setup*.exe | Select-Object -First 1
+          ./butler/butler.exe push $exe.FullName "$env:ITCH_TARGET`:windows-installer" --userversion $version

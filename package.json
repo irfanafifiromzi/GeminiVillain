@@ -1,0 +1,84 @@
+{
+  "name": "geminivillain",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "GeminiVillain - Turn commands into workflows.",
+  "scripts": {
+    "dev": "node scripts/dev-electron.mjs",
+    "build": "npm run vite:build && electron-builder",
+    "dev:tauri": "tauri dev",
+    "build:tauri": "tauri build",
+    "vite:dev": "vite",
+    "vite:build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.1.1",
+    "@tauri-apps/plugin-dialog": "^2.7.3",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/addon-search": "^0.15.0",
+    "@xterm/addon-web-links": "^0.11.0",
+    "@xterm/xterm": "^5.5.0",
+    "node-pty": "^1.1.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/node": "^26.4.1",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "electron": "^44.1.1",
+    "electron-builder": "^26.15.3",
+    "sharp": "^0.35.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vue-tsc": "^2.1.10"
+  },
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "com.geminivillain.app",
+    "productName": "GeminiVillain",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.cjs"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "src-tauri/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "GeminiVillain"
+    },
+    "npmRebuild": false,
+    "asarUnpack": [
+      "**/node_modules/node-pty/**"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "author": "irfan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR-GITHUB-USERNAME/GeminiVillain.git"
+  },
+  "homepage": "https://github.com/YOUR-GITHUB-USERNAME/GeminiVillain"
+}

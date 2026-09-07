@@ -1,0 +1,219 @@
+/* Fonts are bundled, not fetched — the app must look right offline. */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('../assets/fonts/press-start-2p-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* JetBrains Mono is a variable font: one file covers the whole weight axis. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../assets/fonts/jetbrains-mono.woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --surface-0: #0a0d13;
+  --surface-1: #10141d;
+  --surface-2: #181e2a;
+  --surface-3: #212938;
+  --term-bg: #0d1017;
+
+  --border: #232b3a;
+
+  --fg: #e3e9f3;
+  --fg-dim: #a8b3c5;
+  --fg-faint: #6b7688;
+
+  --accent: #ffb020;
+  --accent-soft: #2a2213;
+  /* Text that sits on the accent colour. */
+  --on-accent: #1a1204;
+  --selection: #2a3550;
+  --scroll-hover: #303a4d;
+
+  --ok: #5ecf8f;
+  --warn: #e6b450;
+
+  --danger-fg: #ff9a9c;
+  --danger-bg: #2a1417;
+  --danger-border: #55272b;
+
+  /* Pixel face for identity, mono for everything you actually read. */
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+  --mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, 'Courier New', monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+/* Warm paper, not plain white — the amber identity has to survive the swap. */
+:root[data-theme="light"] {
+  --surface-0: #eae6dc;
+  --surface-1: #f5f2ea;
+  --surface-2: #e4dfd2;
+  --surface-3: #d6d0c0;
+  --term-bg: #faf8f3;
+
+  --border: #d3ccbb;
+
+  --fg: #23201a;
+  --fg-dim: #55503f;
+  --fg-faint: #857e6e;
+
+  --accent: #a35c00;
+  --accent-soft: #f3e4c6;
+  --on-accent: #fff8ec;
+  --selection: #e0d8c0;
+  --scroll-hover: #c3bcaa;
+
+  --ok: #2f7d4f;
+  --warn: #8a6100;
+
+  --danger-fg: #a32b30;
+  --danger-bg: #f7e4e3;
+  --danger-border: #ddb3b1;
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-0);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* The webview must never feel like a web page. */
+::selection { background: var(--selection); }
+
+/* Pixel type is a bitmap face: never antialias it, never letter-space it. */
+.pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+button { font-family: inherit; }
+
+button.primary {
+  padding: 7px 15px;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s var(--ease-out), transform 0.12s var(--ease-out);
+}
+
+button.primary:hover { filter: brightness(1.08); }
+button.primary:active { transform: translateY(1px); }
+
+button.ghost {
+  padding: 7px 15px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--fg-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out),
+    border-color 0.15s var(--ease-out), transform 0.12s var(--ease-out);
+}
+
+button.ghost:hover { background: var(--surface-3); color: var(--fg); }
+button.ghost:active { transform: translateY(1px); }
+
+button.ghost.danger:hover {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); background-clip: content-box; }
+
+/* The theme ripple animates the real UI, so the default cross-fade is off. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* The outgoing theme stays put while the new one is revealed over it. */
+::view-transition-old(root) { z-index: 0; }
+::view-transition-new(root) { z-index: 1; }
+
+/* ---------------------------------------------------------------- motion --- */
+
+@keyframes gv-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gv-dialog-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.965); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Opacity only, deliberately. A scale here would change the terminal's
+   measured rect mid-animation, and the fit addon would resize the pty —
+   which makes ConPTY repaint and erase the wordmark. */
+@keyframes gv-boot-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gv-panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Modal enter/leave, driven by <Transition name="modal">. */
+.modal-enter-active .backdrop-inner,
+.modal-enter-active { animation: gv-backdrop-in 0.18s var(--ease-out) both; }
+.modal-enter-active .dialog { animation: gv-dialog-in 0.28s var(--ease-out) both; }
+
+.modal-leave-active { animation: gv-backdrop-in 0.14s ease-in reverse both; }
+.modal-leave-active .dialog { animation: gv-dialog-in 0.16s ease-in reverse both; }
+
+.gv-boot { animation: gv-boot-in 0.34s var(--ease-out) both; }
+.gv-panel { animation: gv-panel-in 0.22s var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
