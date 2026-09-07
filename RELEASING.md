@@ -7,26 +7,20 @@ can actually find. Both come from one tag push.
 
 ## One-time setup
 
-### 1. Fill in two names
+Both names are already filled in: GitHub `irfanafifiromzi`, itch `geminivillain`.
+The only thing you may want to change is the itch **project slug** — the workflow
+assumes the page will live at <https://geminivillain.itch.io/geminivillain>. If you
+name it something else, edit `ITCH_TARGET` in `.github/workflows/release.yml`.
 
-Search for the placeholders and replace them:
-
-| Placeholder | Where | Replace with |
-| --- | --- | --- |
-| `YOUR-GITHUB-USERNAME` | `package.json` (`repository`, `homepage`) | your GitHub username |
-| `YOUR-ITCH-USERNAME` | `.github/workflows/release.yml` (`ITCH_TARGET`) | your itch.io username |
-
-`ITCH_TARGET` is `user/project`, exactly as it appears in your itch.io URL.
-
-### 2. Create the GitHub repo and push
+### 1. Create the GitHub repo and push
 
 ```powershell
-git remote add origin https://github.com/YOUR-GITHUB-USERNAME/GeminiVillain.git
+git remote add origin https://github.com/irfanafifiromzi/GeminiVillain.git
 git branch -M main
 git push -u origin main
 ```
 
-### 3. Create the itch.io page
+### 2. Create the itch.io page
 
 On itch.io: **Create new project**.
 
@@ -37,7 +31,7 @@ On itch.io: **Create new project**.
 
 Nothing else is needed up front; butler creates the upload channels on first push.
 
-### 4. Add your itch API key to GitHub
+### 3. Add your itch API key to GitHub
 
 1. Get a key at <https://itch.io/user/settings/api-keys>
 2. In the repo: **Settings → Secrets and variables → Actions → New repository secret**

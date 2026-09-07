@@ -13,7 +13,7 @@ permissions:
 
 env:
   # Change this to your itch.io page, in the form user/project.
-  ITCH_TARGET: YOUR-ITCH-USERNAME/geminivillain
+  ITCH_TARGET: geminivillain/geminivillain
 
 jobs:
   windows:
