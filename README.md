@@ -6,8 +6,41 @@ A developer command center that starts as a real terminal. GeminiVillain does no
 reimplement PowerShell, Git, or npm — it drives them, and wraps the repetitive parts
 in a UI you can click.
 
+**[Download for Windows](https://github.com/irfanafifiromzi/GeminiVillain/releases/latest)**
+ · [itch.io page](https://geminivillain.itch.io/geminivillain)
+
 This repository implements **v0.1** — the scope defined in
 [GeminiVillain.md](GeminiVillain.md) §6 and §20.
+
+---
+
+## What it looks like
+
+Everything a workflow is about to do, before it does any of it — and which machine
+each step lands on:
+
+![Preflight](press/3-preflight.png)
+
+A failed build stops the workflow, so the production step never runs:
+
+![A run that stopped](press/5-run.png)
+
+The project page: what is running, what is deployed, and every command as a button.
+
+![Project page](press/2-project.png)
+
+<details>
+<summary>More screenshots</summary>
+
+A real terminal — PowerShell through ConPTY, with tabs.
+
+![Terminal](press/1-terminal.png)
+
+`Ctrl+K` searches every project, command, workflow and server at once.
+
+![Command palette](press/4-palette.png)
+
+</details>
 
 ---
 
